@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'courses',
     'rest_framework',
     'graphene_django',
-    'ai_service',
+   
 ]
 
 MIDDLEWARE = [
