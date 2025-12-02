@@ -39,5 +39,5 @@ jobs:
       - name: Deploy to Render
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
-          service-id: srv-d4nfacuuk2gs739qd74g
+          service-id: srv-d4nfommuk2gs739qp9og
           api-key: rnd_bv8ZLpiAJyJ2yEQ09ALCau3gKRHB
