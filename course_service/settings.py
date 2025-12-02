@@ -4,8 +4,13 @@ Django settings for course_service project.
 
 from pathlib import Path
 import os
+import dj_database_url
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Charger les variables d'environnement depuis .env (si existe)
+load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-pxewarkapyn9deb0q#(5hphcy2#3r$@-pl=x_i#x_84=grj#23')
 
@@ -29,7 +34,6 @@ INSTALLED_APPS = [
     'courses',
     'rest_framework',
     'graphene_django',
-   
 ]
 
 MIDDLEWARE = [
@@ -62,20 +66,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'course_service.wsgi.application'
 
-# Database - PostgreSQL pour production
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'course_db'),
-        'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
-    }
-}
+# Database Configuration
+database_url = os.environ.get('DATABASE_URL')
 
-# Si en développement local, utiliser SQLite
-if DEBUG:
+if database_url:
+    # Configuration PostgreSQL via DATABASE_URL (pour Render ou local avec .env)
+    DATABASES = {
+        'default': dj_database_url.parse(database_url, conn_max_age=600)
+    }
+else:
+    # SQLite pour développement local (si pas de DATABASE_URL)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -113,3 +113,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 GRAPHENE = {
     "SCHEMA": "course_service.schema.schema"
 }
+
+# Configuration pour les logs en production
+if not DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'root': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    }
