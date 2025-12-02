@@ -1,0 +1,7 @@
+Django==5.2.7
+djangorestframework
+graphene-django
+requests
+gunicorn
+psycopg2-binary
+whitenoise
